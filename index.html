@@ -1,388 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VYSAKH</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VYSAKH | DEV PORTFOLIO</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Mono&display=swap" rel="stylesheet">
 
-<!-- Prism -->
-<link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-okaidia.css" rel="stylesheet"/>
-<link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-okaidia.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.css" rel="stylesheet"/>
 
-<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-css.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-markup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-markup.min.js"></script>
 
-<style>
+    <style>
+        /* GLOBAL STYLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Mono', monospace; }
+        body {
+            background: #000;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+        }
 
-/* GLOBAL */
+        /* PROFILE CARD */
+        .profile-card {
+            width: 90%;
+            max-width: 470px;
+            padding: 40px;
+            background: rgba(255, 255, 255, .05);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(0, 242, 255, .35);
+            border-radius: 12px;
+            text-align: center;
+            animation: float 6s infinite ease-in-out;
+            transition: all 0.5s ease;
+        }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Space Mono',monospace;}
-body{
-background:#000;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
-color:#fff;
-}
+        @keyframes float { 50% { transform: translateY(-10px); } }
 
-/* PROFILE CARD */
+        .secret {
+            border-color: #ff0055;
+            box-shadow: 0 0 40px rgba(255, 0, 85, .6);
+        }
 
-.profile-card{
-width:470px;
-padding:55px;
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(18px);
-border:1px solid rgba(0,242,255,.35);
-border-radius:12px;
-text-align:center;
-animation:float 6s infinite ease-in-out;
-}
+        h1 { font-family: 'Syncopate'; letter-spacing: 8px; font-size: 2.2rem; }
+        .subtitle { color: #00f2ff; margin-top: 12px; font-size: .75rem; font-weight: bold; }
 
-@keyframes float{50%{transform:translateY(-10px);}}
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, .15);
+            padding-top: 20px;
+        }
+        .stat-val { display: block; color: #00f2ff; font-size: 1.1rem; font-weight: bold; margin-top: 5px; }
 
-.secret{
-border-color:#ff0055;
-box-shadow:0 0 40px rgba(255,0,85,.6);
-}
+        .code-line { margin-top: 20px; color: #ccc; min-height: 1.2em; }
+        .hidden { display: none !important; }
 
-h1{
-font-family:'Syncopate';
-letter-spacing:12px;
-font-size:2.7rem;
-}
+        /* REPO PANEL */
+        .dev-panel { margin-top: 30px; text-align: left; max-height: 220px; overflow-y: auto; }
+        .repo-title { font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
+        .file { padding: 8px; cursor: pointer; border-radius: 6px; transition: 0.2s; }
+        .file:hover { background: rgba(0, 242, 255, .15); }
+        .folder { color: #00f2ff; font-weight: bold; }
+        .back { color: #ff4d6d; cursor: pointer; margin-right: 10px; font-size: 0.8rem; }
 
-.subtitle{
-color:#00f2ff;
-margin-top:12px;
-font-size:.75rem;
-font-weight:bold;
-}
+        /* UPDATED FILE VIEWER */
+        .viewer {
+            position: fixed;
+            inset: 20px;
+            background: #0d0d0d;
+            border: 1px solid #00f2ff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: .3s;
+            z-index: 100;
+        }
+        .viewer.active { opacity: 1; pointer-events: auto; visibility: visible; }
+        .viewer-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #00f2ff; }
+        
+        .btn-group button, #copy-file, #toggle-view {
+            background: transparent;
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: 5px;
+            transition: 0.2s;
+        }
+        #toggle-view { background: #00f2ff; color: #000; font-weight: bold; }
+        #toggle-view:hover { background: #fff; color: #000; }
+        #close-viewer { cursor: pointer; color: #ff4d6d; margin-left: 15px; font-weight: bold; }
 
-.stats{
-display:flex;
-justify-content:space-around;
-margin-top:25px;
-border-top:1px solid rgba(255,255,255,.15);
-padding-top:20px;
-}
+        pre { flex: 1; overflow: auto; border-radius: 8px; margin: 0; }
+        
+        /* IFRAME PREVIEW */
+        #live-preview {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 8px;
+            border: none;
+        }
 
-.stat-val{
-display:block;
-color:#00f2ff;
-font-size:1.2rem;
-font-weight:bold;
-margin-top:5px;
-}
-
-.code-line{margin-top:20px;color:#ccc;}
-
-.hidden{display:none !important;}
-
-/* DEV PANEL */
-
-.dev-panel{
-margin-top:30px;
-text-align:left;
-max-height:220px;
-overflow:auto;
-}
-
-.repo-title{font-weight:bold;margin-bottom:10px;}
-
-.file{padding:7px;cursor:pointer;border-radius:6px;}
-.file:hover{background:rgba(0,242,255,.25);}
-.folder{color:#00f2ff;font-weight:bold;}
-.back{color:#ff4d6d;cursor:pointer;margin-right:10px;}
-
-/* FILE VIEWER */
-
-.viewer{
-position:fixed;
-inset:40px;
-background:#111;
-border:1px solid #00f2ff;
-padding:20px;
-display:flex;
-flex-direction:column;
-opacity:0;
-pointer-events:none;
-visibility:hidden;
-transition:.25s;
-}
-
-.viewer.active{
-opacity:1;
-pointer-events:auto;
-visibility:visible;
-}
-
-.viewer-top{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
-color:#00f2ff;
-}
-
-#copy-file{
-background:#00f2ff;
-border:none;
-padding:6px 12px;
-cursor:pointer;
-margin-right:10px;
-}
-
-#copy-file:hover{background:#ff0055;color:#fff;}
-
-#close-viewer{cursor:pointer;color:#ff4d6d;}
-
-pre{flex:1;overflow:auto;border-radius:8px;padding:10px;}
-
-/* ADMIN TERMINAL */
-
-.admin-terminal{
-position:fixed;
-inset:0;
-background:#120000;
-color:#ff2e63;
-font-family:monospace;
-display:none;
-flex-direction:column;
-padding:25px;
-z-index:9999;
-}
-
-.admin-terminal.active{
-display:flex;
-animation:glitchFlash .2s 3;
-}
-
-@keyframes glitchFlash{
-0%{background:#120000;}
-50%{background:#300000;}
-100%{background:#120000;}
-}
-
-.admin-header{
-font-weight:bold;
-margin-bottom:15px;
-border-bottom:1px solid #ff0055;
-padding-bottom:8px;
-}
-
-#terminal-output{
-flex:1;
-overflow:auto;
-margin-bottom:10px;
-}
-
-.terminal-input-line{display:flex;}
-
-.terminal-input-line span{margin-right:8px;}
-
-#terminal-input{
-background:transparent;
-border:none;
-outline:none;
-color:#ff2e63;
-flex:1;
-font-family:monospace;
-}
-
-</style>
+        /* ADMIN TERMINAL */
+        .admin-terminal {
+            position: fixed;
+            inset: 0;
+            background: #0a0000;
+            color: #ff2e63;
+            font-family: 'Space Mono', monospace;
+            display: none;
+            flex-direction: column;
+            padding: 25px;
+            z-index: 9999;
+        }
+        .admin-terminal.active { display: flex; animation: glitchFlash .2s 2; }
+        @keyframes glitchFlash { 50% { background: #200000; } }
+        #terminal-output { flex: 1; overflow: auto; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; }
+        .terminal-input-line { display: flex; align-items: center; }
+        #terminal-input { background: transparent; border: none; outline: none; color: #ff2e63; flex: 1; font-family: inherit; }
+    </style>
 </head>
 
 <body>
 
-<div class="profile-card">
+    <div class="profile-card">
+        <h1>VYSAKH</h1>
+        <div class="subtitle">BCA STUDENT // YEAR I</div>
 
-<h1>VYSAKH</h1>
-<div class="subtitle">BCA STUDENT // YEAR I</div>
+        <div class="stats">
+            <div>SKILL<span class="stat-val">JS/UI</span></div>
+            <div>LVL<span class="stat-val">01</span></div>
+            <div>STATUS<span class="stat-val">GRINDING</span></div>
+        </div>
 
-<div class="stats">
-<div>SKILL<span class="stat-val">NULL</span></div>
-<div>LVL<span class="stat-val">01</span></div>
-<div>STATUS<span class="stat-val">GRINDING</span></div>
-</div>
+        <p class="code-line"></p>
 
-<p class="code-line"></p>
+        <div id="dev-panel" class="dev-panel hidden">
+            <p class="repo-title">
+                <span id="back-btn" class="back hidden">⬅ BACK</span>
+                <span>/REPOSITORY_EXPLORER</span>
+            </p>
+            <div id="repo-files"></div>
+        </div>
+    </div>
 
-<div id="dev-panel" class="dev-panel hidden">
-<p class="repo-title">
-<span id="back-btn" class="back hidden">⬅ Back</span>
-Repository Explorer
-</p>
-<div id="repo-files"></div>
-</div>
+    <div id="file-viewer" class="viewer">
+        <div class="viewer-top">
+            <span id="file-name"></span>
+            <div class="btn-group">
+                <button id="toggle-view" class="hidden">🌐 PREVIEW</button>
+                <button id="copy-file">📋 COPY</button>
+                <span id="close-viewer">✖ CLOSE</span>
+            </div>
+        </div>
+        
+        <pre id="code-container" class="line-numbers"><code id="file-content"></code></pre>
+        <iframe id="live-preview" class="hidden" sandbox="allow-scripts"></iframe>
+    </div>
 
-</div>
-
-<!-- FILE VIEWER -->
-<div id="file-viewer" class="viewer">
-<div class="viewer-top">
-<span id="file-name"></span>
-<div>
-<button id="copy-file">📋 Copy</button>
-<span id="close-viewer">✖</span>
-</div>
-</div>
-<pre class="line-numbers"><code id="file-content"></code></pre>
-</div>
-
-<!-- ADMIN TERMINAL -->
-<div id="admin-terminal" class="admin-terminal">
-<div class="admin-header">ROOT ACCESS — VYSAKH SYSTEM</div>
-<div id="terminal-output"></div>
-<div class="terminal-input-line">
-<span>root@vysakh:~#</span>
-<input type="text" id="terminal-input" autocomplete="off">
-</div>
-</div>
+    <div id="admin-terminal" class="admin-terminal">
+        <div id="terminal-output"></div>
+        <div class="terminal-input-line">
+            <span>root@vysakh:~#</span>
+            <input type="text" id="terminal-input" autocomplete="off">
+        </div>
+    </div>
 
 <script>
+    /* TYPING EFFECT */
+    const line = document.querySelector(".code-line");
+    const txt = "> system_ready: press [/] for files...";
+    let i = 0;
+    function type() { if(i < txt.length) { line.innerText += txt[i++]; setTimeout(type, 40); } }
+    type();
 
-/* TYPE EFFECT */
-const line=document.querySelector(".code-line");
-const txt="> initializing developer...";
-let i=0;
-(function t(){if(i<txt.length){line.innerText+=txt[i++];setTimeout(t,40);}})();
+    /* GITHUB CONFIG */
+    const repoAPI = "https://api.github.com/repos/EphemeralYe/SGC/contents";
+    const repoList = document.getElementById("repo-files");
+    const backBtn = document.getElementById("back-btn");
+    const viewer = document.getElementById("file-viewer");
+    const codeContent = document.getElementById("file-content");
+    const codeContainer = document.getElementById("code-container");
+    const previewFrame = document.getElementById("live-preview");
+    const toggleBtn = document.getElementById("toggle-view");
+    let stack = [];
+    let currentFileContent = "";
 
-/* DEV MODE */
-function activateSecret(){
-const panel=document.getElementById("dev-panel");
-document.querySelector(".profile-card").classList.toggle("secret");
-panel.classList.toggle("hidden");
-if(!panel.classList.contains("hidden")) loadRepo();
-}
+    /* TOGGLE DEV MODE */
+    function activateSecret() {
+        document.querySelector(".profile-card").classList.toggle("secret");
+        const panel = document.getElementById("dev-panel");
+        panel.classList.toggle("hidden");
+        if(!panel.classList.contains("hidden")) loadRepo();
+    }
+    document.addEventListener("keydown", e => { if(e.key === "/") activateSecret(); });
 
-document.addEventListener("keydown",e=>{if(e.key==="/")activateSecret();});
+    /* REPO LOGIC */
+    async function loadRepo(path = "") {
+        repoList.innerHTML = "Fetching data...";
+        backBtn.classList.toggle("hidden", stack.length === 0);
+        try {
+            const r = await fetch(`${repoAPI}/${path}`);
+            const data = await r.json();
+            repoList.innerHTML = "";
+            data.forEach(f => {
+                const d = document.createElement("div");
+                d.className = "file " + (f.type === "dir" ? "folder" : "");
+                d.innerHTML = (f.type === "dir" ? "📁 " : "📄 ") + f.name;
+                d.onclick = () => {
+                    if(f.type === "dir") { stack.push(path); loadRepo(f.path); }
+                    else openFile(f);
+                };
+                repoList.appendChild(d);
+            });
+        } catch (e) { repoList.innerHTML = "Error loading repository."; }
+    }
+    backBtn.onclick = () => loadRepo(stack.pop() || "");
 
-/* GITHUB */
-const repoAPI="https://api.github.com/repos/EphemeralYe/SGC/contents";
-const repo=document.getElementById("repo-files");
-const back=document.getElementById("back-btn");
-let stack=[];
+    /* VIEWER LOGIC */
+    async function openFile(file) {
+        viewer.classList.add("active");
+        document.getElementById("file-name").innerText = "> " + file.name;
+        
+        const r = await fetch(file.download_url);
+        currentFileContent = await r.text();
+        
+        // Reset View
+        showCodeView();
+        
+        // Detect HTML for Preview Button
+        if(file.name.endsWith('.html')) {
+            toggleBtn.classList.remove("hidden");
+        } else {
+            toggleBtn.classList.add("hidden");
+        }
 
-async function loadRepo(path=""){
-repo.innerHTML="loading...";
-back.classList.toggle("hidden",stack.length===0);
-const r=await fetch(repoAPI+"/"+path);
-const data=await r.json();
-repo.innerHTML="";
-data.forEach(f=>{
-const d=document.createElement("div");
-d.className="file "+(f.type==="dir"?"folder":"");
-d.innerHTML=(f.type==="dir"?"📁 ":"📄 ")+f.name;
-d.onclick=()=>{
-if(f.type==="dir"){stack.push(path);loadRepo(f.path);}
-else openFile(f);
-};
-repo.appendChild(d);
-});
-}
+        codeContent.textContent = currentFileContent;
+        Prism.highlightElement(codeContent);
+    }
 
-back.onclick=()=>loadRepo(stack.pop()||"");
+    function showCodeView() {
+        codeContainer.classList.remove("hidden");
+        previewFrame.classList.add("hidden");
+        toggleBtn.innerText = "🌐 PREVIEW";
+    }
 
-/* FILE VIEWER */
-const viewer=document.getElementById("file-viewer");
-const content=document.getElementById("file-content");
-const fname=document.getElementById("file-name");
-let current="";
+    function showPreview() {
+        codeContainer.classList.add("hidden");
+        previewFrame.classList.remove("hidden");
+        const doc = previewFrame.contentWindow.document;
+        doc.open();
+        doc.write(currentFileContent);
+        doc.close();
+        toggleBtn.innerText = "📄 CODE";
+    }
 
-async function openFile(file){
-viewer.classList.add("active");
-fname.innerText="> "+file.name;
-const r=await fetch(file.download_url);
-current=await r.text();
-content.className="language-javascript";
-content.textContent=current;
-Prism.highlightElement(content);
-}
+    toggleBtn.onclick = () => {
+        if(previewFrame.classList.contains("hidden")) showPreview();
+        else showCodeView();
+    };
 
-document.getElementById("close-viewer")
-.onclick=()=>viewer.classList.remove("active");
+    document.getElementById("close-viewer").onclick = () => viewer.classList.remove("active");
+    document.getElementById("copy-file").onclick = () => {
+        navigator.clipboard.writeText(currentFileContent);
+        alert("Code copied to clipboard!");
+    };
 
-document.getElementById("copy-file")
-.onclick=async()=>{
-await navigator.clipboard.writeText(current);
-};
+    /* TERMINAL MODE (Code: 6282) */
+    let buffer = "";
+    document.addEventListener("keydown", e => {
+        buffer += e.key;
+        if(buffer.length > 4) buffer = buffer.slice(-4);
+        if(buffer === "6282") launchAdmin();
+    });
 
-/* ADMIN MODE */
-let secretBuffer="";
-const secretCode="6282";
+    function launchAdmin() {
+        document.getElementById("admin-terminal").classList.add("active");
+        const out = document.getElementById("terminal-output");
+        out.innerHTML = "SYSTEM OVERRIDE DETECTED...<br>ACCESS GRANTED.<br>Type 'help' for commands.<br>";
+        document.getElementById("terminal-input").focus();
+    }
 
-document.addEventListener("keydown",(e)=>{
-secretBuffer+=e.key.toLowerCase();
-if(secretBuffer.length>20) secretBuffer=secretBuffer.slice(-20);
-if(secretBuffer.includes(secretCode)){
-launchAdmin();
-secretBuffer="";
-}
-});
-
-function launchAdmin(){
-document.getElementById("admin-terminal").classList.add("active");
-document.querySelector(".profile-card").style.display="none";
-bootSequence();
-}
-
-function bootSequence(){
-const output=document.getElementById("terminal-output");
-const lines=[
-"Initializing root modules...",
-"Bypassing security layers...",
-"Injecting system override...",
-"Access granted.",
-"",
-"Type 'help' to view commands."
-];
-let i=0;
-const interval=setInterval(()=>{
-if(i<lines.length){output.innerHTML+=lines[i]+"<br>";i++;}
-else{clearInterval(interval);enableTerminal();}
-},400);
-}
-
-function enableTerminal(){
-const input=document.getElementById("terminal-input");
-input.focus();
-input.addEventListener("keydown",(e)=>{
-if(e.key==="Enter"){
-const cmd=input.value.trim();
-handleCommand(cmd);
-input.value="";
-}
-});
-}
-
-function handleCommand(cmd){
-const output=document.getElementById("terminal-output");
-output.innerHTML+="<br>root@vysakh:~# "+cmd+"<br>";
-
-switch(cmd){
-case "help": output.innerHTML+="whoami | skills | projects | clear | exit<br>"; break;
-case "whoami": output.innerHTML+="Root user: Vysakh — BCA Developer<br>"; break;
-case "skills": output.innerHTML+="HTML CSS JS Python Git UI/UX<br>"; break;
-case "projects": output.innerHTML+="SGC Repo | Tools Panel | Secret Systems<br>"; break;
-case "clear": output.innerHTML=""; break;
-case "exit": exitAdmin(); break;
-default: output.innerHTML+="Command not found.<br>";
-}
-
-output.scrollTop=output.scrollHeight;
-}
-
-function exitAdmin(){
-document.getElementById("admin-terminal").classList.remove("active");
-document.querySelector(".profile-card").style.display="block";
-}
-
+    document.getElementById("terminal-input").addEventListener("keydown", e => {
+        if(e.key === "Enter") {
+            const val = e.target.value.toLowerCase().trim();
+            const out = document.getElementById("terminal-output");
+            out.innerHTML += `<br>root@vysakh:~# ${val}<br>`;
+            
+            if(val === "help") out.innerHTML += "whoami, skills, clear, exit";
+            else if(val === "whoami") out.innerHTML += "Vysakh: Aspiring BCA Developer & Tech Enthusiast.";
+            else if(val === "skills") out.innerHTML += "HTML5, CSS3, JavaScript, Python, UI Design.";
+            else if(val === "clear") out.innerHTML = "";
+            else if(val === "exit") {
+                document.getElementById("admin-terminal").classList.remove("active");
+                buffer = "";
+            }
+            else out.innerHTML += "Unknown command.";
+            
+            e.target.value = "";
+            out.scrollTop = out.scrollHeight;
+        }
+    });
 </script>
 
 </body>
